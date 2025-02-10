@@ -1,11 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
 const NotesSchema = new Schema({
-  /**user: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
-  },**/
-  name: {
+  },
+  title: {
     type: String,
     required: true,
   },
