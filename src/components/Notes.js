@@ -3,13 +3,22 @@ import { useContext } from "react";
 import noteContext from "../context/notes/noteContext";
 import Noteitem from "./Noteitem";
 import Addnote from "./Addnote";
+import { useNavigate } from "react-router-dom";
 
-const Notes = () => {
+const Notes = (props) => {
   const context = useContext(noteContext);
   const { notes, getallNotes, editNote } = context;
+  let navigate = useNavigate();
   useEffect(() => {
-    getallNotes();
-  }, []);
+    if (localStorage.getItem("token")) {
+      console.log("Token found, fetching notes...");
+
+      getallNotes();
+    } else {
+      console.log("Not found.");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const [note, setNote] = useState({
     id: "",
@@ -34,6 +43,7 @@ const Notes = () => {
   const handleClick = (e) => {
     editNote(note.id, note.etitle, note.edescription, note.etag);
     refClose.current.click();
+    props.showAlert("Note updated successfully.", "success");
   };
 
   const onChange = (e) => {
@@ -42,7 +52,7 @@ const Notes = () => {
 
   return (
     <>
-      <Addnote />
+      <Addnote showAlert={props.showAlert} />
       <button
         type="button"
         className="btn btn-primary d-none"
@@ -88,6 +98,8 @@ const Notes = () => {
                     value={note.etitle}
                     aria-describedby="emailHelp"
                     onChange={onChange}
+                    minLength={5}
+                    required
                   />
                   <div id="emailHelp" className="form-text">
                     We'll never share your email with anyone else.
@@ -104,6 +116,8 @@ const Notes = () => {
                     name="edescription"
                     value={note.edescription}
                     onChange={onChange}
+                    minLength={5}
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -131,6 +145,9 @@ const Notes = () => {
                 Close
               </button>
               <button
+                disabled={
+                  note.etitle.length < 5 || note.edescription.length < 5
+                }
                 type="button"
                 className="btn btn-primary"
                 onClick={handleClick}
@@ -141,11 +158,21 @@ const Notes = () => {
           </div>
         </div>
       </div>
+
       <div className="row my-3">
-        <h3>Your Notes</h3>
+        <h3 className="my-6">Your notes</h3>
+        <div className="container mx-2">
+          {notes.length === 0 && "No notes to display"}
+        </div>
+
         {notes.map((note) => {
           return (
-            <Noteitem key={note._id} updateNote={updateNote} note={note} />
+            <Noteitem
+              key={note._id}
+              updateNote={updateNote}
+              showAlert={props.showAlert}
+              note={note}
+            />
           );
         })}
       </div>

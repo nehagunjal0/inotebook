@@ -17,9 +17,10 @@ router.post(
     body("email").isEmail(),
   ],
   async (req, res) => {
+    let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
 
     //res.send("authentication started");
@@ -29,7 +30,7 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({ error: "A User with same email already exists." });
+          .json({ success, error: "A User with same email already exists." });
       }
 
       //securing password:
@@ -51,12 +52,12 @@ router.post(
       };
 
       const jwtData = jwt.sign(data, JWT_SECRET);
-      console.log(jwtData);
 
-      res.status(201).send("User registered successfully!");
+      success = true;
+      res.json({ success, jwtData });
     } catch (error) {
       console.log(error.message);
-      res.status(500).send("Internal server error.");
+      res.status(500).json({ success, Error: "Internal server error." });
     }
   }
 );
@@ -70,6 +71,7 @@ router.post(
   ],
   async (req, res) => {
     const errors = validationResult(req);
+    let success = false;
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -77,7 +79,9 @@ router.post(
     try {
       let user = await User.findOne({ email: req.body.email });
       if (!user) {
-        return res.status(400).json({ error: "Enter valid credentials" });
+        return res
+          .status(400)
+          .json({ success, error: "Enter valid credentials" });
       }
 
       const passwordCompare = await bcrypt.compare(
@@ -85,7 +89,9 @@ router.post(
         user.password
       );
       if (!passwordCompare) {
-        return res.status(400).json({ error: "Enter valid credentials" });
+        return res
+          .status(400)
+          .json({ success, error: "Enter valid credentials" });
       }
 
       //creating a token:
@@ -97,13 +103,12 @@ router.post(
       };
 
       const jwtData = jwt.sign(data, JWT_SECRET);
-      console.log(jwtData);
-
-      res.status(201).send("Login successful!");
+      success = true;
+      res.json({ success, jwtData });
     } catch (error) {
       console.log(error.message);
 
-      res.status(500).send("Internal server error");
+      res.status(500).send({ Error: "Internal server error" });
     }
   }
 );
