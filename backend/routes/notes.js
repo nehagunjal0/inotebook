@@ -22,11 +22,11 @@ router.post(
   "/addnote",
   fetchuser,
   [
-    body("title", "Enter valid name for your note.").isLength({ min: 3 }),
+    body("title", "Enter valid name for your note.").isLength({ min: 5 }),
     body("description", "Enter description in more details").isLength({
-      min: 20,
+      min: 5,
     }),
-    body("tag", "Should be max of 5 letters").isLength({ max: 5 }),
+    body("tag", "Should be max of 5 letters").isLength({ min: 5 }),
   ],
   async (req, res) => {
     try {

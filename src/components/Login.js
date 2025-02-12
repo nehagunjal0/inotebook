@@ -28,6 +28,7 @@ const Login = (props) => {
       navigate("/");
     } else {
       props.showAlert("Invalid Credentials", "danger");
+      setCredentials({ email: "", password: "" });
     }
   };
 

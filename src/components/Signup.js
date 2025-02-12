@@ -8,7 +8,9 @@ const Signup = (props) => {
     password: "",
     cpassword: "",
   });
+
   let navigate = useNavigate();
+
   const handleClick = async (e) => {
     e.preventDefault();
 
@@ -33,6 +35,7 @@ const Signup = (props) => {
       props.showAlert("Account created successfully", "success");
     } else {
       props.showAlert("Invalid Credentials", "danger");
+      setCredentials({ name: "", email: "", password: "" });
     }
   };
 
@@ -88,7 +91,7 @@ const Signup = (props) => {
             required
           />
         </div>
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <label htmlFor="cpassword" className="form-label">
             Confirm Password
           </label>
@@ -102,14 +105,14 @@ const Signup = (props) => {
             minLength={5}
             required
           />
-        </div>
+        </div> */}
 
         <button
           disabled={
             credentials.name.length < 1 ||
             credentials.email.length < 1 ||
-            credentials.password.length < 1 ||
-            credentials.cpassword < 1
+            credentials.password.length < 1
+            // credentials.cpassword.length < 1
           }
           type="submit"
           className="btn btn-primary"
