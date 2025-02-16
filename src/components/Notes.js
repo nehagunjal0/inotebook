@@ -5,6 +5,7 @@ import Noteitem from "./Noteitem";
 import Addnote from "./Addnote";
 import { useNavigate } from "react-router-dom";
 
+
 const Notes = (props) => {
   const context = useContext(noteContext);
   const { notes, getallNotes, editNote } = context;
@@ -101,9 +102,6 @@ const Notes = (props) => {
                     minLength={5}
                     required
                   />
-                  <div id="emailHelp" className="form-text">
-                    We'll never share your email with anyone else.
-                  </div>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="edescription" className="form-label">

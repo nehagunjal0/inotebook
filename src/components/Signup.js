@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 const Signup = (props) => {
   const [credentials, setCredentials] = useState({
@@ -10,6 +11,7 @@ const Signup = (props) => {
   });
 
   let navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -31,6 +33,7 @@ const Signup = (props) => {
     if (user.success) {
       //save token & redirect
       localStorage.setItem("token", user.jwtData);
+      localStorage.setItem("emailid", credentials.email);
       navigate("/");
       props.showAlert("Account created successfully", "success");
     } else {
@@ -59,6 +62,7 @@ const Signup = (props) => {
             aria-describedby="emailHelp"
             onChange={onChange}
             required
+            autoComplete="off"
           />
         </div>
         <div className="mb-3">
@@ -74,24 +78,34 @@ const Signup = (props) => {
             aria-describedby="emailHelp"
             onChange={onChange}
             required
+            autoComplete="off"
           />
         </div>
-        <div className="mb-3">
+        <div className="mb-3 position-relative">
           <label htmlFor="password" className="form-label">
             Password
           </label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            name="password"
-            value={credentials.password}
-            onChange={onChange}
-            minLength={5}
-            required
-          />
+          <div className="input-group">
+            <input
+              type={showPassword ? "text" : "password"}
+              className="form-control"
+              id="password"
+              name="password"
+              value={credentials.password}
+              onChange={onChange}
+              minLength={5}
+              required
+            />
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
         </div>
-        {/* <div className="mb-3">
+        <div className="mb-3">
           <label htmlFor="cpassword" className="form-label">
             Confirm Password
           </label>
@@ -105,14 +119,19 @@ const Signup = (props) => {
             minLength={5}
             required
           />
-        </div> */}
+          {credentials.password &&
+            credentials.cpassword &&
+            credentials.password !== credentials.cpassword && (
+              <div className="text-danger mt-1">Passwords do not match</div>
+            )}
+        </div>
 
         <button
           disabled={
             credentials.name.length < 1 ||
             credentials.email.length < 1 ||
-            credentials.password.length < 1
-            // credentials.cpassword.length < 1
+            credentials.password.length < 1 ||
+            credentials.password !== credentials.cpassword
           }
           type="submit"
           className="btn btn-primary"

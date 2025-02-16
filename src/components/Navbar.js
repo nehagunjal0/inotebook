@@ -1,17 +1,19 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
 
-const Navbar = () => {
+const Navbar = (props) => {
   let location = useLocation();
   let navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("emailid");
     navigate("/login");
+    props.showAlert("User LoggedOut ", "success");
   };
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
-        
         <button
           className="navbar-toggler"
           type="button"
@@ -57,9 +59,20 @@ const Navbar = () => {
               </Link>
             </form>
           ) : (
-            <button className="btn btn-primary" onClick={handleLogout}>
-              Logout
-            </button>
+            <>
+              <span
+                className="mx-2"
+                style={{ color: "white", fontStyle: "Italic", opacity: 0.6 }}
+              >
+                {localStorage.getItem("emailid")}
+              </span>
+              <span className="mx-2">
+                <FaUserCircle size={30} color="white" />
+              </span>
+              <button className="btn btn-primary mx-2" onClick={handleLogout}>
+                Logout
+              </button>
+            </>
           )}
         </div>
       </div>
